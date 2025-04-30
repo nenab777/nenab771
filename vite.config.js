@@ -1,6 +1,6 @@
 export default {
-    root: './',
+    base: '/nenab771/',
     build: {
-        outDir: 'dist',
-    },
+        outDir: 'dist'
+    }
 };
