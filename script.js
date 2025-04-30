@@ -15,6 +15,7 @@ class MCQApp {
         this.apiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
         this.apiKey = 'AIzaSyDmscAOm-kQBQOaIuCLVB5Urdn4ql-5Yu8';
         this.selectedDifficulty = null;
+        this.basePath = '/nenab771';
         this.bindPDFEvents();
         this.bindDifficultyEvents();
         this.getArabicMotivationalMessage();
@@ -59,7 +60,7 @@ class MCQApp {
             return;
         }
 
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        if (file.size > 10 * 1024 * 1024) {
             this.showError('File size too large. Please upload a smaller PDF.');
             return;
         }
@@ -70,27 +71,26 @@ class MCQApp {
         this.generateMCQsBtn.textContent = 'Processing PDF...';
 
         try {
-            const formData = new FormData();
-            formData.append('file', file);
+            // Read PDF client-side using PDF.js
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let extractedText = '';
 
-            const response = await fetch('http://localhost:5500/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to process PDF');
+            // Extract text from all pages
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                extractedText += pageText + '\n';
             }
 
-            if (!data.text || data.text.trim().length < 10) {
+            if (!extractedText || extractedText.trim().length < 10) {
                 throw new Error('Not enough text content in the PDF');
             }
 
-            console.log('Extracted text length:', data.textLength);
+            console.log('Extracted text length:', extractedText.length);
             this.generateMCQsBtn.textContent = 'Generating MCQs...';
-            await this.generateMCQs(data.text);
+            await this.generateMCQs(extractedText);
 
         } catch (error) {
             console.error('Processing Error:', error);
@@ -156,7 +156,7 @@ class MCQApp {
             localStorage.setItem('mcqs', JSON.stringify(mcqs));
 
             // Redirect to MCQ page
-            window.location.href = 'mcq.html';
+            window.location.href = `${this.basePath}/mcq.html`;
 
         } catch (error) {
             console.error('MCQ Generation Error:', error);
