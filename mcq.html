@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz</title>
+    <link rel="stylesheet" href="mcq-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        <div id="questionContainer">
+            <div class="question-number">
+                Question <span id="currentNumber">1</span> of <span id="totalQuestions">10</span>
+            </div>
+            <h2 id="questionText"></h2>
+            <div id="optionsContainer" class="options-container"></div>
+            <div class="navigation">
+                <button id="prevBtn" class="nav-btn" disabled>Previous</button>
+                <button id="nextBtn" class="nav-btn">Next</button>
+            </div>
+            <button id="submitBtn" class="submit-btn" style="display: none;">Submit Quiz</button>
+        </div>
+        <div id="resultsContainer" class="results-container" style="display: none;">
+            <h2>Quiz Complete!</h2>
+            <div class="score">
+                <span id="scoreText">Your Score: </span>
+                <span id="score">0</span>/<span id="totalScore">0</span>
+            </div>
+            <div id="resultsList"></div>
+            <div class="result-actions">
+                <button id="retryBtn" class="retry-btn">Try Again</button>
+                <button id="newQuizBtn" class="new-quiz-btn">Generate New MCQs</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        class QuizManager {
+            constructor() {
+                this.mcqs = JSON.parse(localStorage.getItem('mcqs'));
+                this.currentQuestion = 0;
+                this.answers = new Array(this.mcqs.length).fill(null);
+                this.initializeElements();
+                this.bindEvents();
+                this.showQuestion();
+                this.updateProgress();
+            }
+
+            initializeElements() {
+                this.questionText = document.getElementById('questionText');
+                this.optionsContainer = document.getElementById('optionsContainer');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.submitBtn = document.getElementById('submitBtn');
+                this.progressBar = document.querySelector('.progress');
+                this.currentNumberSpan = document.getElementById('currentNumber');
+                this.totalQuestionsSpan = document.getElementById('totalQuestions');
+                this.totalQuestionsSpan.textContent = this.mcqs.length;
+            }
+
+            bindEvents() {
+                this.prevBtn.addEventListener('click', () => this.previousQuestion());
+                this.nextBtn.addEventListener('click', () => this.nextQuestion());
+                this.submitBtn.addEventListener('click', () => this.showResults());
+                document.getElementById('retryBtn').addEventListener('click', () => this.retryQuiz());
+                document.getElementById('newQuizBtn').addEventListener('click', () => this.generateNewQuiz());
+            }
+
+            showQuestion() {
+                const mcq = this.mcqs[this.currentQuestion];
+                this.questionText.textContent = mcq.question;
+                this.currentNumberSpan.textContent = this.currentQuestion + 1;
+                
+                this.optionsContainer.innerHTML = mcq.options.map((option, index) => `
+                    <div class="option ${this.answers[this.currentQuestion] === index ? 'selected' : ''}"
+                         data-index="${index}">
+                        ${option}
+                    </div>
+                `).join('');
+
+                this.optionsContainer.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', () => this.selectOption(parseInt(option.dataset.index)));
+                });
+
+                this.updateNavButtons();
+            }
+
+            selectOption(index) {
+                this.answers[this.currentQuestion] = index;
+                this.showQuestion();
+                this.updateProgress();
+            }
+
+            previousQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    this.showQuestion();
+                    this.updateProgress();
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentQuestion < this.mcqs.length - 1) {
+                    this.currentQuestion++;
+                    this.showQuestion();
+                    this.updateProgress();
+                } else {
+                    if (this.answers.every(answer => answer !== null)) {
+                        this.submitBtn.style.display = 'block';
+                        this.nextBtn.style.display = 'none';
+                    }
+                }
+            }
+
+            updateProgress() {
+                const progress = ((this.answers.filter(a => a !== null).length) / this.mcqs.length) * 100;
+                this.progressBar.style.width = `${progress}%`;
+                
+                if (this.currentQuestion === this.mcqs.length - 1 && this.answers[this.currentQuestion] !== null) {
+                    this.nextBtn.textContent = 'Finish';
+                } else {
+                    this.nextBtn.textContent = 'Next';
+                }
+            }
+
+            updateNavButtons() {
+                this.prevBtn.disabled = this.currentQuestion === 0;
+                this.nextBtn.disabled = this.answers[this.currentQuestion] === null;
+            }
+
+            showResults() {
+                document.getElementById('questionContainer').style.display = 'none';
+                document.getElementById('resultsContainer').style.display = 'block';
+
+                const correctAnswers = this.answers.filter((answer, index) => answer === 0).length;
+                document.getElementById('score').textContent = correctAnswers;
+                document.getElementById('totalScore').textContent = this.mcqs.length;
+
+                const resultsList = document.getElementById('resultsList');
+                resultsList.innerHTML = this.mcqs.map((mcq, index) => `
+                    <div class="result-item ${this.answers[index] === 0 ? 'correct' : 'incorrect'}">
+                        <p class="question">${mcq.question}</p>
+                        <p class="answer">Your answer: ${mcq.options[this.answers[index]]}</p>
+                        <p class="correct-answer">Correct answer: ${mcq.options[0]}</p>
+                    </div>
+                `).join('');
+            }
+
+            retryQuiz() {
+                this.currentQuestion = 0;
+                this.answers = new Array(this.mcqs.length).fill(null);
+                document.getElementById('questionContainer').style.display = 'block';
+                document.getElementById('resultsContainer').style.display = 'none';
+                this.submitBtn.style.display = 'none';
+                this.nextBtn.style.display = 'block';
+                this.showQuestion();
+                this.updateProgress();
+            }
+
+            generateNewQuiz() {
+                window.location.href = 'index.html';
+            }
+        }
+
+        new QuizManager();
+    </script>
+</body>
+</html>

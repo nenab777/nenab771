@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to MCQs</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="main-title">JENE FOREVER</h1>
+            <div id="motivationalMessage" class="motivational-message"></div>
+        </div>
+        <div class="app-header">
+            <h2>Welcome Back, Najma! 💖</h2>
+            <p>My Brilliant Civil Engineer</p>
+        </div>
+        <div class="upload-container">
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="pdfInput" accept="application/pdf" class="file-input">
+                <div class="upload-content">
+                    <svg class="upload-icon" viewBox="0 0 24 24">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <span class="upload-text">Drag & drop your PDF here or <span class="browse-text">browse</span></span>
+                </div>
+            </div>
+            <div id="fileName" class="file-name"></div>
+            <div class="difficulty-selector">
+                <h3>Select Difficulty Level</h3>
+                <div class="difficulty-options">
+                    <button class="difficulty-btn" data-difficulty="easy">
+                        <span class="difficulty-icon">🟢</span>
+                        Easy
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="medium">
+                        <span class="difficulty-icon">🟡</span>
+                        Medium
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="hard">
+                        <span class="difficulty-icon">🟠</span>
+                        Hard
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="very-hard">
+                        <span class="difficulty-icon">🔴</span>
+                        Very Hard
+                    </button>
+                </div>
+            </div>
+            <div class="progress-wrapper">
+                <progress id="uploadProgress" class="upload-progress" value="0" max="100"></progress>
+            </div>
+            <button id="generateMCQsBtn" class="generate-btn" disabled>
+                <span class="btn-text">Generate MCQs</span>
+                <svg class="btn-icon" viewBox="0 0 24 24">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                </svg>
+            </button>
+            <div id="loadingAnimation" class="loading-animation">
+                <div class="spinner"></div>
+                <span>Processing PDF...</span>
+            </div>
+            <div id="errorContainer" class="error-container"></div>
+        </div>
+        <div id="mcqContainer" class="mcq-container"></div>
+    </div>
+    <script src="script.js" type="module"></script>
+</body>
+</html>
