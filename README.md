@@ -1,26 +1,19 @@
 # MCQ Generator for Jiji
 
-A personalized MCQ generator built with love by نينب for جيجي. This application helps civil engineering students generate multiple-choice questions from PDF documents.
+A personalized MCQ generator built with love by نينب for جيجي (نجمة). Live demo: [https://nenab777.github.io/nenab771](https://nenab777.github.io/nenab771)
 
 ## Features
-- PDF text extraction
+- Custom PDF text extraction
 - Multiple difficulty levels
 - Interactive quiz interface
 - Personalized Arabic motivational messages
-- Mobile-responsive design
+- Responsive design
 
 ## Setup
-1. Clone the repository:
 ```bash
 git clone https://github.com/nenab777/nenab771.git
-```
-2. Install dependencies:
-```bash
+cd nenab771
 npm install
-```
-3. Add your API key in `config.js`
-4. Start the server:
-```bash
 npm start
 ```
 

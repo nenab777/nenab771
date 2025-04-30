@@ -11,6 +11,11 @@
         "predeploy": "npm run build",
         "deploy": "gh-pages -d dist"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/nenab777/nenab771.git"
+    },
+    "homepage": "https://nenab777.github.io/nenab771",
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.18.2",
