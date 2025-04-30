@@ -1,13 +1,16 @@
 # MCQ Generator for Jiji
 
-A personalized MCQ generator built with love by نينب for جيجي (نجمة). Live demo: [https://nenab777.github.io/nenab771](https://nenab777.github.io/nenab771)
+A personalized MCQ generator built with love by نينب for جيجي (نجمة). 
 
 ## Features
-- Custom PDF text extraction
+- PDF text extraction
 - Multiple difficulty levels
 - Interactive quiz interface
 - Personalized Arabic motivational messages
-- Responsive design
+- Mobile responsive design
+
+## Live Site
+Visit: [https://nenab777.github.io/nenab771](https://nenab777.github.io/nenab771)
 
 ## Setup
 ```bash
@@ -17,8 +20,8 @@ npm install
 npm start
 ```
 
-## Technologies
-- Node.js & Express
-- Google Gemini API
-- PDF2JSON Parser
-- Modern CSS & Animations
+## Deploy
+```bash
+npm run build
+npm run deploy
+```
